@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vedic Charm Consultation</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to bottom right, #c0b283, #d4af37);
+      color: #2f2f2f;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    .container {
+      max-width: 520px;
+      margin: 80px auto;
+      background: #fffaf0;
+      border-radius: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      padding: 30px;
+    }
+    h1 {
+      color: #4a3f1f;
+      font-weight: 700;
+    }
+    button {
+      background: linear-gradient(to right, #bfa760, #d4af37);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      margin: 10px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    button:hover { transform: scale(1.05); }
+    input, select {
+      width: 90%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #bfa760;
+      border-radius: 8px;
+    }
+    .fade-in {
+      animation: fadeIn 1.2s ease;
+    }
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(15px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="app">
+    <h1>🌿 Vedic Charm 🌿</h1>
+    <p>Welcome to your Ayurvedic Consultation</p>
+    <button onclick="showLogin()">Login</button>
+    <button onclick="showSignup()">Sign Up</button>
+  </div>
+
+  <audio id="bgMusic" loop>
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c142b9be61.mp3?filename=calm-background-ambient-110125.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const app = document.getElementById("app");
+    const bgMusic = document.getElementById("bgMusic");
+
+    let patientData = {};
+    let questionIndex = 0;
+    let selectedBank = [];
+    let questionBanks = [
+      ["Do you often feel tired?", "Do you experience frequent headaches?", "Do you have trouble sleeping?", "Do you skip meals?", "Do you exercise daily?", "Do you consume caffeine?", "Do you stay hydrated?", "Do you eat fresh fruits?", "Do you meditate?", "Do you get stressed easily?"],
+      ["Do you wake up early?", "Do you prefer warm food?", "Do you have dry skin?", "Do you enjoy reading?", "Do you take walks?", "Do you overthink often?", "Do you stay calm under pressure?", "Do you like spicy food?", "Do you feel cold easily?", "Do you take naps?"],
+      ["Do you sleep late?", "Do you have oily skin?", "Do you eat fast food?", "Do you get angry quickly?", "Do you sweat easily?", "Do you enjoy competition?", "Do you speak loudly?", "Do you get irritated fast?", "Do you drink enough water?", "Do you like cold weather?"],
+      ["Do you feel lazy in the morning?", "Do you have joint pain?", "Do you avoid social gatherings?", "Do you enjoy calm environments?", "Do you get sleepy after meals?", "Do you feel bloated often?", "Do you move slowly?", "Do you like warm baths?", "Do you feel heavy after eating?", "Do you enjoy soft music?"],
+      ["Do you worry too much?", "Do you crave sweets?", "Do you spend time in nature?", "Do you have good appetite?", "Do you enjoy physical activity?", "Do you stay positive?", "Do you feel anxious often?", "Do you experience mood swings?", "Do you prefer silence?", "Do you get thirsty often?"]
+    ];
+
+    const summaries = [
+      [
+        "Based on your responses, it appears that your body's vital energies, or doshas, are slightly imbalanced, most likely leaning toward a Vata-Pitta disturbance. This often manifests as restlessness, irregular routines, and overactivity of the mind. To help restore harmony, try establishing a daily routine that includes consistent sleep and meal times, gentle yoga, and deep breathing practices. Avoid skipping meals and ensure that you consume warm, nourishing foods that calm the nervous system and enhance digestion.",
+        "Your lifestyle choices seem to reflect a strong drive and intellectual curiosity, which can lead to overexertion and burnout if not balanced. Introduce moments of mindfulness throughout your day, take short walks after meals, and minimize exposure to screens before bedtime. Herbal teas such as tulsi and ashwagandha may help calm your mind and strengthen immunity. You may also benefit from self-massage with warm sesame oil to reduce restlessness and fatigue.",
+        "To maintain your well-being in the long term, continue to build self-awareness of how your habits influence your body and emotions. Embrace foods rich in natural sweetness and grounding qualities—like cooked grains, root vegetables, and ghee. Keep a gratitude journal or meditate daily to stabilize your mood and focus. By making small, consistent adjustments, you can restore balance to your dosha, leading to vitality, calmness, and inner clarity."
+      ],
+      [
+        "Your assessment indicates an excess of Pitta dosha, which governs metabolism, heat, and transformation in the body. This imbalance might cause irritability, overheating, and digestive issues. To cool and balance your system, prioritize fresh fruits, leafy greens, and light meals prepared with minimal spices. Avoid caffeine, alcohol, and fried foods, as they can aggravate internal heat. Spending time in nature, especially near water, can help pacify Pitta and bring calmness.",
+        "Incorporate meditation and pranayama into your daily routine, especially techniques like sheetali breathing that naturally cool the body. Practice moderation in work and competition, allowing yourself to rest without guilt. Aloe vera juice or rose water drinks can provide gentle cooling. Remember that your natural strength lies in discipline and leadership; nurturing patience and empathy will help balance your fiery nature.",
+        "To maintain long-term harmony, ensure that you go to bed before 10 p.m. and wake up early to align with your body's natural cycles. Surround yourself with soothing colors like blue and green, and engage in creative hobbies that express your energy positively. When Pitta is balanced, you experience confidence, clarity, and radiant energy that uplifts both yourself and those around you."
+      ],
+      [
+        "Your responses reflect qualities of a Kapha imbalance, associated with heaviness, lethargy, and slow digestion. While your stable and compassionate nature is your strength, it may lead to physical sluggishness and emotional stagnation. Begin your mornings with light exercise or brisk walking to awaken your energy. Avoid oversleeping and replace heavy, oily foods with lighter options like soups, steamed vegetables, and herbal teas.",
+        "To stimulate your body and mind, embrace change and spontaneity. Engage in uplifting music, social interaction, and stimulating scents like eucalyptus or clove. Dry massage with chickpea flour or a silk glove can invigorate your circulation. Avoid cold dairy and processed sugar; instead, favor warm, spiced meals to ignite your digestive fire. Ginger, cinnamon, and black pepper are excellent allies for you.",
+        "Balance in Kapha brings about emotional stability, endurance, and physical strength. Practice gratitude, keep your space uncluttered, and engage in meaningful challenges to keep your motivation alive. With consistency, lightness, and movement, you’ll rediscover your natural vitality and warmth that supports emotional and physical well-being."
+      ]
+    ];
+
+    function showHome() {
+      app.innerHTML = `
+        <h1>🌿 Vedic Charm 🌿</h1>
+        <p>Welcome to your Ayurvedic Consultation</p>
+        <button onclick="showLogin()">Login</button>
+        <button onclick="showSignup()">Sign Up</button>
+      `;
+      bgMusic.pause();
+      bgMusic.currentTime = 0;
+    }
+
+    function showLogin() {
+      app.innerHTML = `
+        <h1>Login</h1>
+        <input id="email" placeholder="Email" type="email" required />
+        <input id="password" placeholder="Password" type="password" required />
+        <button onclick="startConsultationForm()">Login</button>
+      `;
+    }
+
+    function showSignup() {
+      app.innerHTML = `
+        <h1>Sign Up</h1>
+        <input placeholder="Full Name" id="signupName" required />
+        <input placeholder="Email" id="signupEmail" type="email" required />
+        <input placeholder="Password" id="signupPassword" type="password" required />
+        <button onclick="startConsultationForm()">Sign Up</button>
+      `;
+    }
+
+    function startConsultationForm() {
+      bgMusic.play();
+      app.innerHTML = `
+        <h1>Patient Information</h1>
+        <input id="name" placeholder="Full Name" />
+        <input id="age" type="number" placeholder="Age" />
+        <select id="gender">
+          <option value="" disabled selected>Select Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+        <input id="symptoms" placeholder="Primary Concern" />
+        <button onclick="startQuestions()">Start Consultation</button>
+      `;
+    }
+
+    function startQuestions() {
+      patientData = {
+        name: document.getElementById("name").value,
+        age: document.getElementById("age").value,
+        gender: document.getElementById("gender").value,
+        symptoms: document.getElementById("symptoms").value
+      };
+      selectedBank = questionBanks[Math.floor(Math.random() * questionBanks.length)];
+      questionIndex = 0;
+      showQuestion();
+    }
+
+    function showQuestion() {
+      if (questionIndex < selectedBank.length) {
+        app.innerHTML = `
+          <h2 class="fade-in">${selectedBank[questionIndex]}</h2>
+          <button onclick="nextQuestion('Yes')">Yes</button>
+          <button onclick="nextQuestion('Sometimes')">Sometimes</button>
+          <button onclick="nextQuestion('No')">No</button>
+        `;
+      } else {
+        showSummary();
+      }
+    }
+
+    function nextQuestion(answer) {
+      questionIndex++;
+      showQuestion();
+    }
+
+    function showSummary() {
+      const randomSummary = summaries[Math.floor(Math.random() * summaries.length)];
+      app.innerHTML = <h2>Consultation Summary for ${patientData.name}</h2>;
+      let i = 0;
+      function showParagraph() {
+        if (i < randomSummary.length) {
+          const p = document.createElement("p");
+          p.classList.add("fade-in");
+          p.textContent = randomSummary[i];
+          app.appendChild(p);
+          i++;
+          setTimeout(showParagraph, 3500);
+        } else {
+          const restartBtn = document.createElement("button");
+          restartBtn.textContent = "Restart Consultation";
+          restartBtn.onclick = resetConsultation;
+          app.appendChild(restartBtn);
+        }
+      }
+      showParagraph();
+    }
+
+    function resetConsultation() {
+      patientData = {};
+      questionIndex = 0;
+      selectedBank = [];
+      showHome();
+    }
+  </script>
+</body>
+</html>
